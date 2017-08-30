@@ -94,7 +94,7 @@
       const parentLeaf = newElHasChildren.parentNode.parentNode;
 
       const parentOffset = parentLeaf.getBoundingClientRect();
-      const targetOffset = target.getBoundingClientRect();
+      const targetOffset = target.getBoundingClientRect() ;
 
       // DETERMINE HORISONTEL POSITION
 
