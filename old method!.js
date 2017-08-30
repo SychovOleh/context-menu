@@ -61,7 +61,8 @@
       })
     }
 
-    determMainPos() { 
+    determMainPos() {
+      this.colOfRightPointStart = [];
       this.menu.classList.remove('left');
       this.menu.classList.remove('right');
       this.viewportWidth = window.innerWidth;
@@ -70,71 +71,100 @@
       let pxToBorderBelow = this.viewportHeight - event.clientY;
 
       // Find the side
-      if ((this.menu.clientWidth + this.scrollbarWidth) < pxToBorderRight) {
-        this.menu.style.left = event.clientX + 'px';
-        this.menu.classList.add('right');
-      } else if (event.clientX - this.menu.clientWidth > 0) {
+      if ((this.menu.clientWidth + this.scrollbarWidth) >= pxToBorderRight) {
         this.menu.style.left = (event.clientX - this.menu.clientWidth) + 'px';
         this.menu.classList.add('left');
       } else {
-        this.menu.style.left = 1 + 'px';
-        this.menu.classList.add('left');
+        this.menu.style.left = event.clientX + 'px';
+        this.menu.classList.add('right');
       }
 
+      let menuOffset = this.menu.getBoundingClientRect();
       // Find above or below
       if (this.menu.clientHeight >= pxToBorderBelow) {
         this.menu.style.top = (event.clientY - this.menu.clientHeight) + 'px';
       } else {
         this.menu.style.top = event.clientY + 'px';
       }
+
+      // Find point of horisontal starting nested elements
+      if (this.menu.classList.contains('right')) {
+        // this.rightPointStart = event.clientX + (this.menu.clientWidth - 1); OLD
+        this.rightPointStart = menuOffset.right;
+      } else {
+        // this.rightPointStart = event.clientX; OLD
+        this.rightPointStart = menuOffset.left;
+      }
+      this.colOfRightPointStart.push(this.rightPointStart);
     }
 
     determPosNestedEl(target) {
-      const newElHasChildren = target.querySelector('.menu__item--parent');
-      const parentLeaf = newElHasChildren.parentNode.parentNode;
+      let newElHasChildren = target.querySelector('.menu__item--parent');
+      let parentLeaf = newElHasChildren.parentNode.parentNode;
 
-      const parentOffset = parentLeaf.getBoundingClientRect();
-      const targetOffset = target.getBoundingClientRect();
+      // let newElOffset = newElHasChildren.getBoundingClientRect();
+      let newElOffset;
+      let parentOffset = parentLeaf.getBoundingClientRect();
+      let targetOffset = target.getBoundingClientRect();
 
       // DETERMINE HORISONTEL POSITION
 
+      let curHorisontStart = this.colOfRightPointStart[this.colOfRightPointStart.length - 1];
+      // let curHorisontStart = this.rightPointStart; NEW NO
+
       if (parentLeaf.classList.contains('right')) {
-        if (this.viewportWidth - (parentOffset.right + newElHasChildren.clientWidth + this.scrollbarWidth - 1) > 0) {
-          const toRightOpen = parentOffset.right - 1;
+        // if ((this.viewportWidth - newElOffset.right) > 0) { NEW NO
+        if (this.viewportWidth - (curHorisontStart + newElHasChildren.clientWidth + this.scrollbarWidth) > 0) {
+          let toRightOpen = target.clientWidth - 1;
           newElHasChildren.style.left = toRightOpen + 'px';
+          curHorisontStart += (newElHasChildren.clientWidth - 1);
           newElHasChildren.classList.add('right');
-        } else if (parentOffset.left - newElHasChildren.clientWidth > 0) {
-          const toLeftOpen = parentOffset.left;
-          newElHasChildren.style.left = toLeftOpen - newElHasChildren.clientWidth + 'px';
-          newElHasChildren.classList.add('left');
+          let newElToRight = this.viewportWidth - newElHasChildren.getBoundingClientRect().right;
+          if (newElToRight - this.scrollbarWidth < 0) { // IF NOT RIGHT POSITIONING HAS ALREADY DONE
+            console.log('error 1')
+            newElHasChildren.style.left -= newElToRight + 'px';
+            newElHasChildren.classList.remove('right');
+            newElHasChildren.classList.add('left');
+            curHorisontStart -= newElToRight - newElHasChildren.clientWidth;
+          }
         } else {
-          newElHasChildren.style.left = 1 + 'px';
+          let toLeftOpen = newElHasChildren.clientWidth;
+          newElHasChildren.style.left = -toLeftOpen + 'px';
+          curHorisontStart -= (parentLeaf.clientWidth + (newElHasChildren.clientWidth + 1));
           newElHasChildren.classList.add('left');
+          let newElToLeft = newElHasChildren.getBoundingClientRect().left;
+          if (newElToLeft < 0) { // IF NOT RIGHT POSITIONING HAS ALREADY DONE
+            console.log('error 2')
+            newElHasChildren.style.left -= newElToLeft + 'px'; // I used -= couse newElToLeft ==< 0. And if 100 - (-10) === 110! Like in this case.
+            newElHasChildren.classList.remove('left');
+            newElHasChildren.classList.add('right');
+            curHorisontStart += newElToLeft + newElHasChildren.clientWidth;
+          }
         }
       } else {
-        if (parentOffset.left - newElHasChildren.clientWidth > 0) {
-          const toLeftOpen = parentOffset.left;
-          newElHasChildren.style.left = toLeftOpen - newElHasChildren.clientWidth + 'px';
+        if (curHorisontStart - newElHasChildren.clientWidth > 0) {
+          let toLeftOpen = newElHasChildren.clientWidth;
+          newElHasChildren.style.left = -toLeftOpen + 'px';
+          curHorisontStart -= newElHasChildren.clientWidth;
           newElHasChildren.classList.add('left');
-        } else if (parentOffset.right + newElHasChildren.clientWidth < this.viewportWidth - this.scrollbarWidth) {
-          const toRightOpen = parentOffset.right - 1;
-          newElHasChildren.style.left = toRightOpen + 'px';
-          newElHasChildren.classList.add('right');
         } else {
-          newElHasChildren.style.left = this.viewportWidth - this.scrollbarWidth - newElHasChildren.clientWidth - 1 + 'px';
+          let toRightOpen = target.clientWidth - 1;
+          newElHasChildren.style.left = toRightOpen + 'px';
+          curHorisontStart += (parentLeaf.clientWidth + (newElHasChildren.clientWidth - 1));
           newElHasChildren.classList.add('right');
         }
       }
+      this.colOfRightPointStart.push(curHorisontStart);
 
-      // DETERMINE VERTICAL POSITION
+      // determine Vertical position
+      let newLeafStartTopPos = -(parentOffset.top - targetOffset.top);
+      newElHasChildren.style.top = (newLeafStartTopPos - 4) + 'px';
 
-      let newLeafStartTopPos = targetOffset.top;
-      newElHasChildren.style.top = newLeafStartTopPos - 4 + 'px';
-      let isLeafGoBot = newElHasChildren.getBoundingClientRect().bottom < this.viewportHeight;
+      newElOffset = newElHasChildren.getBoundingClientRect();
+      let isLeafGoBot = (this.viewportHeight - newElOffset.bottom) > 0;
       if (!isLeafGoBot) {
-        newLeafStartTopPos = newElHasChildren.clientHeight - target.clientHeight
-        let posNow = Number(newElHasChildren.style.top.replace('px', ''))
-        newElHasChildren.style.top = posNow - newLeafStartTopPos + 9 + 'px';
+        newLeafStartTopPos = parentLeaf.clientHeight - newElHasChildren.clientHeight;
+        newElHasChildren.style.top = (newLeafStartTopPos - 1) + 'px';
       }
     }
 
@@ -164,6 +194,9 @@
       event.target.children[1].style.display = 'none';
       event.target.children[1].classList.remove('left');
       event.target.children[1].classList.remove('right');
+
+      this.colOfRightPointStart.pop();
+
     }
     buildContMenuContent(contentStructure) {
       let ul = document.createElement('ul');

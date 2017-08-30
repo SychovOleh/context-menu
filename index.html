@@ -7,10 +7,18 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Context menu</title>
   <link rel="stylesheet" type="text/css" href="main.css">
-  <script src="js/ContextMenu.js"></script>
 </head>
 
 <body>
+  <h1 class="title">Context menu</h1>
+  <p class="content">The main behaviour of this widget is good positioning by viewport at any level nesting.<br>
+    Click <span class="red-text">RIGHT BUTTON MOUSE</span> at any reactangle. And try it.</p>
+  <div class="el-for-insert a"><span class="el__text">Click here</span></div>
+  <div class="el-for-insert b"><span class="el__text">...or here</span></div>
+  <div class="el-for-insert c"><span class="el__text">...or maybe here</span></div>
+  <div class="el-for-insert d"><span class="el__text">If you want you will be able to click here</span></div>
+  <div class="el-for-insert e"><span class="el__text">And not only there, but here too!</span></div>
+  <script src="js/ContextMenu.js"></script> 
   <script>
     (function() {
       const structure = [{
@@ -162,8 +170,8 @@
           }
         }],
       }];
-
-      let cm = new ContextMenu(null, structure);
+let cmTargets = document.querySelectorAll('.el-for-insert')
+      let cm = new ContextMenu(cmTargets, structure);
       window.cm = cm;
     })();
   </script>

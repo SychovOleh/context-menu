@@ -144,138 +144,29 @@ table {
 
 /*  */
 
-@font-face {
-  font-family: 'AntsyPants', serif;
-  src: url(font/AntsyPants.eot);
-  src: url(font/AntsyPants.eot?#iefix)format("embedded-opentype"), url(font/AntsyPants.ttf)format("truetype");
-}
-
 
 /*  */
 
 body {
-  color: #333;
-  padding: 0 15px;
-  min-height: 700px;
-  font-family: sans-serif;
+  min-height: 1000px;
+  /* background: linear-gradient(to top left, #00B2C8, #0FD1E9); */
 }
 
-.red-text {
-  color: #ff0043;
-}
-
-.title {
-  max-width: 85%;
-  margin: 0 auto;
-  padding-top: 40px;
-  font-size: 24px;
-  letter-spacing: 2px;
-  text-align: center;
-  font-family: 'AntsyPants', serif;
-}
-
-.content {
-  padding-top: 10px;
-  margin: 0 auto;
-  font-size: 16px;
-  letter-spacing: 1.2px;
-  text-align: center;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-@media (min-width: 768px) {
-  .title {
-    font-size: 44px;
-    letter-spacing: 7px;
-  }
-  .content {
-    max-width: 70%;
-  }
-}
-
-@media (min-width: 1200px) {
-  .content {
-    max-width: 40%;
-  }
-}
-
-
-/*  */
-
-.el-for-insert {
-  background: peru;
-  margin-top: 1vh;
+.title{
+  padding-top: 80px;
+  font-size: 42px;
   text-align: center;
 }
-
-.el__text {
-  display: inline-block;
-  line-height: normal;
-  vertical-align: middle;
-  font-size: 12.5px;
-}
-
-@media (min-width: 768px) {
-  .el__text {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 992px) {
-  .el__text {
-    font-size: 20px;
-    text-transform: uppercase;
-  }
-}
-
-.a {
-  margin-left: 2vw;
-  width: 20vw;
-  height: 30px;
-  line-height: 30px;
-}
-
-.b {
-  margin-left: 33vw;
-  width: 7vw;
-  height: 140px;
-  line-height: 140px;
-}
-
-.c {
-  margin-left: 71vw;
-  width: 17vw;
-  height: 90px;
-  line-height: 90px;
-}
-
-.d {
-  margin-left: 8vw;
-  width: 69vw;
-  height: 70px;
-  line-height: 70px;
-}
-
-.e {
-  margin-top: 2vh;
-  margin-left: 59vw;
-  width: 12vw;
-  height: 120px;
-  line-height: 120px;
-}
-
 
 /*  */
 
 
-/* CONTEXT MENU DESIGN */
+/* Context Menu design */
 
 
 /*  */
 
 .context-menu {
-  text-transform: none;
-  text-align: left;
   position: fixed;
   z-index: 1000000000;
   margin: 0;
@@ -376,8 +267,7 @@ body {
   font-size: 14px;
   line-height: 15px;
   white-space: nowrap;
-  /* position: absolute; */
-  position: fixed;
+  position: absolute;
   top: 16px;
 }
 
