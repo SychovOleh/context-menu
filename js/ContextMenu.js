@@ -35,7 +35,7 @@
       if (testFunc(node)) {
         return node;
       }
-      node = node.parentNode ;
+      node = node.parentNode;
     }
   }
 
@@ -61,7 +61,7 @@
       })
     }
 
-    determMainPos() { 
+    determMainPos() {
       this.menu.classList.remove('left');
       this.menu.classList.remove('right');
       this.viewportWidth = window.innerWidth;
@@ -94,7 +94,7 @@
       const parentLeaf = newElHasChildren.parentNode.parentNode;
 
       const parentOffset = parentLeaf.getBoundingClientRect();
-      const targetOffset = target.getBoundingClientRect() ;
+      const targetOffset = target.getBoundingClientRect();
 
       // DETERMINE HORISONTEL POSITION
 
@@ -108,7 +108,7 @@
           newElHasChildren.style.left = toLeftOpen - newElHasChildren.clientWidth + 'px';
           newElHasChildren.classList.add('left');
         } else {
-          newElHasChildren.style.left = 1 + 'px';
+          newElHasChildren.style.left = 0 + 'px';
           newElHasChildren.classList.add('left');
         }
       } else {
@@ -119,9 +119,9 @@
         } else if (parentOffset.right + newElHasChildren.clientWidth < this.viewportWidth - this.scrollbarWidth) {
           const toRightOpen = parentOffset.right - 1;
           newElHasChildren.style.left = toRightOpen + 'px';
-          newElHasChildren.classList.add('right') ;
+          newElHasChildren.classList.add('right');
         } else {
-          newElHasChildren.style.left = this.viewportWidth - this.scrollbarWidth - newElHasChildren.clientWidth - 1 + 'px';
+          newElHasChildren.style.left = this.viewportWidth - this.scrollbarWidth - newElHasChildren.clientWidth + 'px';
           newElHasChildren.classList.add('right');
         }
       }
@@ -130,11 +130,16 @@
 
       let newLeafStartTopPos = targetOffset.top;
       newElHasChildren.style.top = newLeafStartTopPos - 4 + 'px';
-      let isLeafGoBot = newElHasChildren.getBoundingClientRect().bottom < this.viewportHeight;
+
+      let newElOffset = newElHasChildren.getBoundingClientRect();
+      let isLeafGoBot = newElOffset.bottom < this.viewportHeight;
       if (!isLeafGoBot) {
         newLeafStartTopPos = newElHasChildren.clientHeight - target.clientHeight
-        let posNow = Number(newElHasChildren.style.top.replace('px', ''))
+        let posNow = newElOffset.top;
         newElHasChildren.style.top = posNow - newLeafStartTopPos + 9 + 'px';
+        if (newElHasChildren.getBoundingClientRect().top < 0) {
+          newElHasChildren.style.top = 0 + 'px';
+        }
       }
     }
 
@@ -145,15 +150,15 @@
     }
     show() {
       this.menu.classList.add('context-menu--active');
-      this.menu.style.display = 'block' ;
+      this.menu.style.display = 'block';
       // wheelOff.disableScroll();
     }
     hide() {
+      // wheelOff.enableScroll();
       this.menu.style.display = 'none';
       this.menu.classList.remove('context-menu--active');
       this.menu.classList.remove('left');
-      this.menu.classList.remove('right') ;
-      // wheelOff.enableScroll();
+      this.menu.classList.remove('right');
     }
 
     onMouseEnter(event) {
@@ -188,7 +193,6 @@
       return ul
     }
     onContextMemu(event) {
-
       event.preventDefault();
       if (!this.isContextMenu()) {
         this.show();
@@ -197,7 +201,6 @@
       } else {
         this.determMainPos();
       }
-
     }
     onClick(event) {
       if (this.isContextMenu()) {
