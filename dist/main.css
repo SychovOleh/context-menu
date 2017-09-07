@@ -153,6 +153,12 @@ table {
 
 /*  */
 
+.noscroll {
+  position: fixed;
+  overflow-y: scroll;
+  width: 100%;
+}
+
 body {
   color: #333;
   padding: 0 15px;

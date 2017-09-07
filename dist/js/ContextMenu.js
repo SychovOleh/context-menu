@@ -30,6 +30,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return widthNoScroll - widthWithScroll;
   };
 
+  var scroll = {
+    disableScroll: function disableScroll() {
+      if ($(document).height() > $(window).height()) {
+        var scrollTop = $('html').scrollTop() ? $('html').scrollTop() : $('body').scrollTop();
+        $('html').addClass('noscroll').css('top', -scrollTop);
+      }
+    },
+    enableScroll: function enableScroll() {
+      var scrollTop = parseInt($('html').css('top'), 10);
+      $('html').removeClass('noscroll');
+      $('html,body').scrollTop(-scrollTop);
+    }
+  };
+
   var changeRootClasses = function changeRootClasses(nodeElem, classToAdd, classToRemove) {
     nodeElem.classList.remove([classToRemove]);
     nodeElem.classList.add([classToAdd]);
@@ -191,6 +205,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function show() {
         this.menu.classList.add('context-menu--active');
         this.menu.style.display = 'block';
+        scroll.disableScroll();
         // wheelOff.disableScroll();
       }
     }, {
@@ -201,6 +216,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.menu.classList.remove('context-menu--active');
         this.menu.classList.remove('left');
         this.menu.classList.remove('right');
+        scroll.enableScroll();
       }
     }, {
       key: "buildContMenuContent",
@@ -232,6 +248,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       key: "onContextMemu",
       value: function onContextMemu(event) {
         event.preventDefault();
+
         if (!this.isContextMenu()) {
           this.show();
           event.target.appendChild(this.menu);

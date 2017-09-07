@@ -25,6 +25,20 @@
     return widthNoScroll - widthWithScroll;
   }
 
+  const scroll = {
+    disableScroll() {
+      if ($(document).height() > $(window).height()) {
+        let scrollTop = ($('html').scrollTop()) ? $('html').scrollTop() : $('body').scrollTop();
+        $('html').addClass('noscroll').css('top', -scrollTop);
+      }
+    },
+    enableScroll() {
+      let scrollTop = parseInt($('html').css('top'), 10);
+      $('html').removeClass('noscroll');
+      $('html,body').scrollTop(-scrollTop);
+    }
+  }
+
   const changeRootClasses = (nodeElem, classToAdd, classToRemove) => {
     nodeElem.classList.remove([classToRemove]);
     nodeElem.classList.add([classToAdd]);
@@ -169,6 +183,7 @@
     show() {
       this.menu.classList.add('context-menu--active');
       this.menu.style.display = 'block';
+      scroll.disableScroll();
       // wheelOff.disableScroll();
     }
     hide() {
@@ -177,6 +192,7 @@
       this.menu.classList.remove('context-menu--active');
       this.menu.classList.remove('left');
       this.menu.classList.remove('right');
+      scroll.enableScroll();
     }
 
 
@@ -204,6 +220,7 @@
     }
     onContextMemu(event) {
       event.preventDefault();
+
       if (!this.isContextMenu()) {
         this.show();
         event.target.appendChild(this.menu);
@@ -212,6 +229,7 @@
         this.determMainPos();
       }
     }
+
     onClick(event) {
       if (this.isContextMenu()) {
         let actions = this.menu.querySelectorAll('.menu__item--action');
